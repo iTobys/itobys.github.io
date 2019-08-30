@@ -6,16 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://codetoby.com">
-  <title>Archives | 码街</title>
+  <title>记事: 表单公共组件 | 码街</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="码街">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码街">
-<meta property="og:url" content="http://codetoby.com/archives/index.html">
+  <meta name="description" content="事情起因: 继上一篇&amp;lt;&amp;lt;记事: keep-alive 与 vue-router 组合使用&amp;gt;&amp;gt;所留下的坑…">
+<meta name="keywords" content="Vue.js,前端,工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记事: 表单公共组件">
+<meta property="og:url" content="http://codetoby.com/posts/40426/index.html">
 <meta property="og:site_name" content="码街">
+<meta property="og:description" content="事情起因: 继上一篇&amp;lt;&amp;lt;记事: keep-alive 与 vue-router 组合使用&amp;gt;&amp;gt;所留下的坑…">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-30T04:02:34.110Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码街">
+<meta name="twitter:title" content="记事: 表单公共组件">
+<meta name="twitter:description" content="事情起因: 继上一篇&amp;lt;&amp;lt;记事: keep-alive 与 vue-router 组合使用&amp;gt;&amp;gt;所留下的坑…">
   
     <link rel="alternative" href="/atom.xml" title="码街" type="application/atom+xml">
   
@@ -145,36 +149,68 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-记事-表单公共组件" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      记事: 表单公共组件
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/40426/" class="archive-article-date">
+
+        
+        <a href="/posts/40426/" class="archive-article-date">
   	<time datetime="2019-08-30T02:12:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/40426/">记事: 表单公共组件</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>事情起因: 继上一篇&lt;&lt;记事: keep-alive 与 vue-router 组合使用&gt;&gt;所留下的坑…</p>
+</blockquote>
+<a id="more"></a>
 
-        <div class="article-info info-on-right">
-          
+<p>承接上一篇记事的结尾提出的问题, 目前所有表单操作(包括新增, 修改, 审批等)全部都在add.vue这个文件中进行操作, 因此add.vue会存在大量的判断以及方法操作, 如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># add.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">....</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  ...</span><br><span class="line">  activated() &#123;</span><br><span class="line">    if (type === &apos;ADD&apos;) &#123; ... &#125;</span><br><span class="line">    else if (type === &apos;EDIT&apos;) &#123; ... &#125;</span><br><span class="line">    else if (type === &apos;REVIEW&apos;) &#123; ... &#125;</span><br><span class="line">    else &#123; ... &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    submitAdd() &#123; ... &#125;,</span><br><span class="line">    submitEdit() &#123; ... &#125;,</span><br><span class="line">    submitReview() &#123; ... &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然说这样的结构也没问题(主要是偷懒), 但是考虑到后期其他同事维护, 他们去查看代码时, 发现所有表单操作都堆到一个页面操作, 排除时候也比较麻烦, 甚至出现了<strong>找不到这个方法在哪里执行了</strong>, 其实这个也是小数情况, 更大的问题是: </p>
+<ul>
+<li>按钮的显示混乱, 定义了太大如 isRead, isAdd这类字段用于判断处于什么状态</li>
+<li>一些特殊场景, 如频繁切换页面(从新增页突然切换到修改页又切换到审批页)会出现数据混乱显示问题</li>
+</ul>
+<p>虽然以上问题可以通过watch, computed 甚至 activated() 来处理判断, 但这样做只会再次增加整个页面的复杂度, 所以在某一天空(发)闲(呆)的时候, 我对产品(后面其他跟产品一样类型的页面也进行抽离)的表单页面进行组件化</p>
+<h2 id="首先第一步操作-重新规划页面"><a href="#首先第一步操作-重新规划页面" class="headerlink" title="首先第一步操作, 重新规划页面"></a>首先第一步操作, 重新规划页面</h2><p>这也是本次改动最为重要, 先从本来add.vue的操作完全分离开, 拆开了3个页面, 如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- product</span><br><span class="line">  -- add.vue</span><br><span class="line">  -- edit.vue</span><br><span class="line">  -- review.vue</span><br></pre></td></tr></table></figure>
+
+<p>这样操作就不会像之前那样, 容易通过一些操作导致冲突了, 每一个页面各司其职, 只执行自己的逻辑部分</p>
+<h2 id="第二步-抽取公共的表单组件-抽离业务代码"><a href="#第二步-抽取公共的表单组件-抽离业务代码" class="headerlink" title="第二步, 抽取公共的表单组件, 抽离业务代码"></a>第二步, 抽取公共的表单组件, 抽离业务代码</h2><p>接下来就是把add.vue里原本的表单组件全部抽离到**/components/productFormView(新增的)里面, 并且进行组件改写, 改写步骤为:</p>
+<ol>
+<li>把原本在 <strong>activated()</strong> 的类型操作剔除, 通过 props 和 watch 2个方法配合使用</li>
+<li>把所有提交方法 通过 <strong>this.$emit(‘submit’)</strong> 暴露给页面, 让业务操作尽可能在页面中完成</li>
+</ol>
+<p>以下就是组件的写法, 可以用于参考</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># components/productFormView</span><br><span class="line">&lt;template&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      form: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  props: &#123;</span><br><span class="line">    // 类型, 通过类型决定模板</span><br><span class="line">    type: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;ADD&apos;, // 这里我默认是ADD模板</span><br><span class="line">    &#125;,</span><br><span class="line">    // 外部传入的表单结构, 一般跟组件的格式一样, 用于直接覆盖原本组件Form格式(请跟组件的Form一致)</span><br><span class="line">    propForm: &#123;</span><br><span class="line">      type: Object,</span><br><span class="line">      default: () =&gt; &#123;&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    // 用来拦截一些按钮的显示</span><br><span class="line">    isRead: &#123;</span><br><span class="line">      type: Boolean,</span><br><span class="line">      default: false</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  watch: &#123;</span><br><span class="line">    // 我把原本在 activated() 的判断方案迁移在 watch 中, 让其更加直观</span><br><span class="line">    type (newType) &#123;</span><br><span class="line">      if (newType === &apos;ADD&apos;) &#123; ... &#125;</span><br><span class="line">      else if (newType === &apos;EDIT&apos;) &#123; ... &#125;</span><br><span class="line">      else if (newType === &apos;REVIEW&apos;) &#123; ... &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    propForm (newForm) &#123;</span><br><span class="line">      if (newForm) this.form = newForm</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    submit () &#123;</span><br><span class="line">      // 用$emit把当前的form和type一次过抛出给页面, 由页面进行业务操作</span><br><span class="line">      this.$emit(&apos;submit&apos;, this.form, this.type)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-------------------</span><br></pre></td></tr></table></figure>
+
+<p>这样我的表单组件就已经重构完成, 结下来就是最后步骤:</p>
+<h2 id="第三步-组件调用"><a href="#第三步-组件调用" class="headerlink" title="第三步 组件调用"></a>第三步 组件调用</h2><p>组件调用这部我就直接上代码, 因为简单而且易懂</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># product/add.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;product-form-view type=&quot;ADD&quot; @submit=&quot;submitAdd&quot;&gt;&lt;/product-form-view&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">import productFormView from &apos;@/components/productFormView/productFormView&apos;</span><br><span class="line">export default &#123;</span><br><span class="line">  components: &#123;</span><br><span class="line">    productFormView</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    submitAdd(form, type) &#123;</span><br><span class="line">      # todo 这里接收到form和type(可选), 进行业务操作了</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新增(add.vue)这个页面相比修改(edit.vue)和审批(review.vue)比较简单点, 而修改和审批则需要通过<strong>生命周期</strong>函数进行拉取远端数据,再覆盖组件的form, 前提是组件的form和服务端的返回的类型必须一致, 操作如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># product/edit.vue &amp; product/review.vue</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;product-form-view :type=&quot;type&quot; :propForm=&quot;form&quot; @submit=&quot;submitAdd&quot;&gt;&lt;/product-form-view&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">export default &#123;</span><br><span class="line">  ...</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      type: &apos;EDIT&apos;,</span><br><span class="line">      form: &apos;&apos;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  activated () &#123;</span><br><span class="line">    // TODO 上一篇记事说过, 因为缓存器的原因 原本这里是用mounted 现在换成 activated 以便每次加载的数据都是最新的</span><br><span class="line">    axios().then(response =&gt; &#123;</span><br><span class="line">      this.form = response.data.data // 这里就是拉取远端数据了再赋值, 组件里的watch就会动态更换原本组件的Form</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此为止, 我就把公司的表单组件重构完了, 虽然看上去很笨重, 但也是一种比较好解决方法, 这个重构方法我在项目中每个模块都有使用到, 确实感受到组件化带来的方便, 如果以后还有更新我也会第一时间更新到这篇文章中.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -194,65 +230,55 @@
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/21414/" class="archive-article-date">
-  	<time datetime="2019-08-14T02:35:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-14</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/posts/21414/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">记事: keep-alive 与 vue-router 组合使用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/21414/">记事: keep-alive 与 vue-router 组合使用</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -275,8 +301,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

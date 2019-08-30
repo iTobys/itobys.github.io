@@ -6,16 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://codetoby.com">
-  <title>Archives | 码街</title>
+  <title>记事: keep-alive 与 vue-router 组合使用 | 码街</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="码街">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码街">
-<meta property="og:url" content="http://codetoby.com/archives/index.html">
+  <meta name="description" content="事情起因: 测试人员突然提出一个改到脑壳痛的需求…">
+<meta name="keywords" content="Vue.js,前端,工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记事: keep-alive 与 vue-router 组合使用">
+<meta property="og:url" content="http://codetoby.com/posts/21414/index.html">
 <meta property="og:site_name" content="码街">
+<meta property="og:description" content="事情起因: 测试人员突然提出一个改到脑壳痛的需求…">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-30T02:13:08.750Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码街">
+<meta name="twitter:title" content="记事: keep-alive 与 vue-router 组合使用">
+<meta name="twitter:description" content="事情起因: 测试人员突然提出一个改到脑壳痛的需求…">
   
     <link rel="alternative" href="/atom.xml" title="码街" type="application/atom+xml">
   
@@ -145,82 +149,84 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-记事-keep-alive-与-vue-router-组合使用" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/40426/" class="archive-article-date">
-  	<time datetime="2019-08-30T02:12:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/40426/">记事: 表单公共组件</a>
+    <h1 class="article-title" itemprop="name">
+      记事: keep-alive 与 vue-router 组合使用
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/21414/" class="archive-article-date">
+        
+        <a href="/posts/21414/" class="archive-article-date">
   	<time datetime="2019-08-14T02:35:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-14</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/21414/">记事: keep-alive 与 vue-router 组合使用</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>事情起因: 测试人员突然提出一个改到脑壳痛的需求…</p>
+</blockquote>
+<a id="more"></a>
 
-        <div class="article-info info-on-right">
-          
+<p>当时产品同事在新增&amp;审核产品, 提出一个方(坑)便(人)的需求: </p>
+<blockquote>
+<p>“能不能在切换Tags时保存之前的记录,不要切换回来刚编辑好的内容就没了…”</p>
+</blockquote>
+<p>需求一提, 带来的是脑袋异常剧痛的感觉, 原因是当时的页面构成是这样的(后期已抽离出组件): </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- product</span><br><span class="line">  -- add.vue</span><br><span class="line">  -- index.vue</span><br><span class="line">  -- review.vue</span><br></pre></td></tr></table></figure>
+
+<p>在这个模块中, 新增/修改/审批全部在<strong>add.vue</strong>这个文件内操作, 为了兼容写法需要在生命周期<strong>mounted</strong>中对不同的query进行判断操作<br>既然需求明确, 改动看起来也复杂, 那么我当时就开始着手修改文件</p>
+<h2 id="开始动工前准备"><a href="#开始动工前准备" class="headerlink" title="开始动工前准备"></a>开始动工前准备</h2><h3 id="为了完成需求-当时我准备了以下方案"><a href="#为了完成需求-当时我准备了以下方案" class="headerlink" title="为了完成需求, 当时我准备了以下方案"></a>为了完成需求, 当时我准备了以下方案</h3><p><strong>利用浏览器缓存器LocalStorage完成需求</strong></p>
+<ol>
+<li>每次进入打开新标签时, 缓存上一份的数据到LocalStorage, 并创建一个<strong>uuid和Type</strong>(在Vuex中)用于标识模块</li>
+<li>标签(Tags)切换时, 进入LocalStorage寻找对应的uuid和type匹配的原数据集, 重新插入表单内</li>
+<li>在提交,审批,修改时, 清除当前标签的LocalStorage缓存</li>
+</ol>
+<p>这个方案只有一个问题, 一旦刷新浏览器, Vuex的uuid会被清除, 但LocalStorage的数据还没被剔除, 会导致越来越多废弃数据, 所以这个方案最后被放弃, 而沿用下面的方案</p>
+<p><strong>利用Vue提供的keep-alive组件包裹router-view, 从而缓存数据源</strong><br>这种方案是成本较低的(上面的方案硬是写了一个common文件维护成本太高了), 考虑到后期人员的维护也方便, 但是这个方案也有一个缺点</p>
+<blockquote>
+<p>因为keep-alive组件是全局包裹了, 导致我有些模块本来不需要缓存也被缓存了, 这个效果不是我想要的</p>
+</blockquote>
+<p>在出现这个问题之后, 我马上借鉴度娘以及谷哥各位大佬的方案, 但都不太灵光(偶尔会出现一些不知名的错误, 比如缓存过的页面会被刷新), 然后我在找资料的时候发现<strong>VueRouter</strong>的文档中有一篇<strong>关于路由元信息的介绍</strong></p>
+<h2 id="根据官方文档-路由元信息的描述是这样的"><a href="#根据官方文档-路由元信息的描述是这样的" class="headerlink" title="根据官方文档, 路由元信息的描述是这样的:"></a>根据官方文档, 路由元信息的描述是这样的:</h2><blockquote>
+<p>定义路由的时候可以配置 meta 字段：<br>那么如何访问这个 meta 字段呢？<br>首先，我们称呼 routes 配置中的每个路由对象为 路由记录。路由记录可以是嵌套的，因此，当一个路由匹配成功后，他可能匹配多个路由记录<br>例如，根据上面的路由配置，/foo/bar 这个 URL 将会匹配父路由记录以及子路由记录。<br>一个路由匹配到的所有路由记录会暴露为 $route 对象 (还有在导航守卫中的路由对象) 的 $route.matched 数组。因此，我们需要遍历 $route.matched 来检查路由记录中的 meta 字段。 balabala….</p>
+</blockquote>
+<h2 id="而我们能看的懂的意思是这样的"><a href="#而我们能看的懂的意思是这样的" class="headerlink" title="而我们能看的懂的意思是这样的:"></a>而我们能看的懂的意思是这样的:</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">可以在routes配置中往指定路由中添加一个 meta 属性</span><br><span class="line">在组件中可以通过 $route.meta 获取我们设置 meta 属性</span><br></pre></td></tr></table></figure>
+
+<h2 id="既然可以通过-route-meta获取路由元信息-接下来就是先改造routes配置"><a href="#既然可以通过-route-meta获取路由元信息-接下来就是先改造routes配置" class="headerlink" title="既然可以通过$route.meta获取路由元信息, 接下来就是先改造routes配置"></a>既然可以通过$route.meta获取路由元信息, 接下来就是先改造routes配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.... 上面忽略</span><br><span class="line">&#123;</span><br><span class="line">  path: &apos;add&apos;,</span><br><span class="line">  name: &apos;productAdd&apos;,</span><br><span class="line">  meta: &#123;</span><br><span class="line">    keepAlive: true, // 用于是否开启缓存配置, 这个可以随意定义</span><br><span class="line">  &#125;,</span><br><span class="line">  component: add.vue</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>这样我的add路由配置就完成了, 接下来需要把router-view外面套上keep-alive, 然后加上判断, 通过 meta 中的keepAlive属性判断是否需要使用keep-alive包裹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive v-if=&quot;$route.meta.keepAlive&quot;&gt;</span><br><span class="line">  &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br><span class="line">&lt;router-view v-else&gt;&lt;/router-view&gt;</span><br></pre></td></tr></table></figure>
+
+<p>到这里, 测试人员要求的功能已经实现了, 本来已经万事大吉, 但问题又来了:</p>
+<blockquote>
+<p>因为keep-alive组件的原因, 它会缓存第一次的组件状态与数据, 所以组件内mounted生命周期只会执行一次</p>
+</blockquote>
+<p><strong>解决这个问题的方法很简单, 把需要重新渲染的方法放置在另外一个生命周期函数 activated 方法中</strong></p>
+<p>activated() 这个生命周期函数只会在keep-alive组件被使用的时候才会出现, 基本说这个是搭配keep-alive使用的, 与它匹配的还有 <strong>deactivated ()</strong> 这个是在keep-alive组件被卸载的时候才会触发(一般在跳转路由的时候)</p>
+<blockquote>
+<p>这里有一个小技巧: 一般我会把一些只需要执行一次的方法放在mounted里面 比如: 加载第三方签名的接口,<br>而需要频繁操作的方法我会放在activated 比如: 不同ID切换需要重新渲染对应ID的数据</p>
+</blockquote>
+<p>当然这个方案有待优化, 例如</p>
+<ul>
+<li>大量的操作代码都放在add.vue这个组件, 使得add.vue组件代码异常庞大(已经接近600行), 后续人员维护成本高</li>
+<li>不同的路由对应的还是add.vue, 不够直观</li>
+</ul>
+<p>所以我在下一篇记事中, 会介绍我在后面基于这篇文档的经验重新编写当前模块的案例</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -240,19 +246,59 @@
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/posts/40426/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          记事: 表单公共组件
+        
+      </div>
+    </a>
   
   
-    </div></section>
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -275,8 +321,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
