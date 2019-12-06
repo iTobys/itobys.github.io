@@ -6,16 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://codetoby.com">
-  <title>Tag: 工作 | 码街</title>
+  <title>记录一次Vue首屏优化 | 码街</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="码街">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码街">
-<meta property="og:url" content="http://codetoby.com/tags/工作/index.html">
+  <meta name="description" content="基于基础架构优化, 涉及路由优化, 抽离第三方资源, gzip配置等">
+<meta name="keywords" content="Vue.js,前端,工作,优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录一次Vue首屏优化">
+<meta property="og:url" content="http://codetoby.com/posts/62496/index.html">
 <meta property="og:site_name" content="码街">
+<meta property="og:description" content="基于基础架构优化, 涉及路由优化, 抽离第三方资源, gzip配置等">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="http://codetoby.com/assets/images/noPrefetchGzip.png">
+<meta property="og:updated_time" content="2019-12-06T10:02:47.276Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码街">
+<meta name="twitter:title" content="记录一次Vue首屏优化">
+<meta name="twitter:description" content="基于基础架构优化, 涉及路由优化, 抽离第三方资源, gzip配置等">
+<meta name="twitter:image" content="http://codetoby.com/assets/images/noPrefetchGzip.png">
   
     <link rel="alternative" href="/atom.xml" title="码街" type="application/atom+xml">
   
@@ -145,36 +151,58 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-记录一次Vue首屏优化" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/62496/" class="archive-article-date">
-  	<time datetime="2019-12-06T09:10:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/62496/">记录一次Vue首屏优化</a>
+    <h1 class="article-title" itemprop="name">
+      记录一次Vue首屏优化
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/posts/62496/" class="archive-article-date">
+  	<time datetime="2019-12-06T09:10:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>基于基础架构优化, 涉及路由优化, 抽离第三方资源, gzip配置等</p>
+</blockquote>
+<a id="more"></a>
+
+<hr>
+<p>废话不多说直接上图, 这是完全没有优化过的移动端项目首页加载的请求时间<br><img src="/assets/images/noPrefetchGzip.png" alt="尚未优化"><br>当时看到的时候一瞬间就懵逼了…. 这用户体验就非常爆(垃)炸(圾)好.<br>那好, 我就拿这个项目去进行一系列基础优化, 尽可能去抢救一下. </p>
+<p>— 本项目基于Vue-cli3.x 优化</p>
+<h2 id="首先我们把步骤先分好"><a href="#首先我们把步骤先分好" class="headerlink" title="首先我们把步骤先分好:"></a>首先我们把步骤先分好:</h2><ol>
+<li>抽离第三方资源, 将第三方资源合并到一个文件下</li>
+<li>项目路由懒加载化, 关闭原有脚手架的预加载模块配置, 用手动配置的方式去控制</li>
+<li>项目打包时加入Gzip打包</li>
+<li>服务端开启Gzip配置</li>
+<li>END….</li>
+</ol>
+<p>– ps: 这就是最基础优化体系, 某度一抓一大把系列[狗头]</p>
+<h3 id="1-抽离第三方资源-webpack大利器-gt-webpack-DllPlugin"><a href="#1-抽离第三方资源-webpack大利器-gt-webpack-DllPlugin" class="headerlink" title="1. 抽离第三方资源 - webpack大利器 =&gt; webpack.DllPlugin"></a>1. 抽离第三方资源 - webpack大利器 =&gt; webpack.DllPlugin</h3><p>首先要把第三方资源抽离并且打包到一个文件下面, 就需要用到webpack提供DllPlugin模块, 这个模块可以把指定的第三方资源合并到一个文件下集中管理.<br>并且在平时开发中(dev), 可以去掉第三方编译, 减少编译时间, 确实是一个比较用的工具, 如果对这个工具还是不太了解建议看<a href="https://webpack.js.org/plugins/dll-plugin/" target="_blank" rel="noopener">文档</a>, 下面直接上操作, 上代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在项目目录新增一个文件, 名为 webpack.dll.config.js, 文件配置如下</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// webpack.dll.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="comment">// 以下2个包需要自己手动安装</span></span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; CleanWebpackPlugin &#125; = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// dll文件存放的目录 我一般放在同级目录 方便管理</span></span><br><span class="line"><span class="keyword">const</span> dllPath = <span class="string">'vendor'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    <span class="comment">// 需要提取的库文件 我这里就提取项目全部第三方资源</span></span><br><span class="line">    vendor: [<span class="string">'vue'</span>, <span class="string">'vue-router'</span>, <span class="string">'vuex'</span>, <span class="string">'axios'</span>, <span class="string">'echarts'</span>, <span class="string">'core-js'</span>, <span class="string">'js-cookie'</span>, <span class="string">'vant'</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.join(__dirname, dllPath),</span><br><span class="line">    filename: <span class="string">'[name].dll.js'</span>,  <span class="comment">// vendor.dll.js中暴露出的全局变量名</span></span><br><span class="line">    <span class="comment">// 保持与 webpack.DllPlugin 中名称一致</span></span><br><span class="line">    library: <span class="string">'[name]_[hash]'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="comment">// 清除之前的dll文件</span></span><br><span class="line">    <span class="keyword">new</span> CleanWebpackPlugin(),</span><br><span class="line">    <span class="comment">// 设置环境变量</span></span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123;</span><br><span class="line">      <span class="string">'process.env'</span>: &#123;</span><br><span class="line">        NODE_ENV: <span class="string">'production'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="comment">// manifest.json 描述动态链接库包含了哪些内容</span></span><br><span class="line">    <span class="keyword">new</span> webpack.DllPlugin(&#123;</span><br><span class="line">      path: path.join(__dirname, dllPath, <span class="string">'[name]-manifest.json'</span>),</span><br><span class="line">      <span class="comment">// 保持与 output.library 中名称一致</span></span><br><span class="line">      name: <span class="string">'[name]_[hash]'</span>,</span><br><span class="line">      context: process.cwd()</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里抽离第三方资源的配置已经搞定, 接下来就是添加<strong>package.json</strong>的运行命令以及对<strong>vue.config.js(没有的自己新增)</strong>进行修改</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打开package.json 在scripts添加一条记录</span></span><br><span class="line"></span><br><span class="line"><span class="string">"dll"</span>: <span class="string">"webpack -p --progress --config ./webpack.dll.config.js"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 接着运行一遍  npm run dll 等待打包完毕</span></span><br><span class="line">npm run dll</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接着修改 vue.config.js</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)</span><br><span class="line"><span class="keyword">const</span> AddAssetHtmlPlugin = <span class="built_in">require</span>(<span class="string">'add-asset-html-webpack-plugin'</span>) <span class="comment">// 需要多安装一个添加静态文件的包</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  ...</span><br><span class="line">  configureWebpack: &#123;</span><br><span class="line">    plugins: [</span><br><span class="line">      <span class="comment">// DllReferencePlugin =&gt; 是告诉webpack使用了哪些第三方库代码 这里定位到dll打包出来的json文件就OK</span></span><br><span class="line">      <span class="keyword">new</span> webpack.DllReferencePlugin(&#123;</span><br><span class="line">        context: process.cwd(),</span><br><span class="line">        manifest: <span class="built_in">require</span>(<span class="string">'./vendor/vendor-manifest.json'</span>)</span><br><span class="line">      &#125;),</span><br><span class="line">      <span class="comment">// 使用AddAssetHtmlPlugin 解放双手不需要每次都要手动修改dist的html文件</span></span><br><span class="line">      <span class="keyword">new</span> AddAssetHtmlPlugin(&#123;</span><br><span class="line">        <span class="comment">// dll文件位置</span></span><br><span class="line">        filepath: path.resolve(__dirname, <span class="string">'./vendor/*.js'</span>),</span><br><span class="line">        <span class="comment">// dll 引用路径</span></span><br><span class="line">        publicPath: <span class="string">'./vendor'</span>,</span><br><span class="line">        <span class="comment">// dll最终输出的目录</span></span><br><span class="line">        outputPath: <span class="string">'./vendor'</span></span><br><span class="line">      &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样第一步就完成了, 打包和构建项目时都会发现明显加快了, 减少出现构建项目出去喝一杯咖啡还没构建完毕的尴尬情况(不给你们偷懒的机会)[狗头]</p>
+<p>持续更新ing….</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -198,111 +226,55 @@
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/40426/" class="archive-article-date">
-  	<time datetime="2019-08-30T02:12:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/posts/40426/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">记事: 表单公共组件</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/40426/">记事: 表单公共组件</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/posts/21414/" class="archive-article-date">
-  	<time datetime="2019-08-14T02:35:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/posts/21414/">记事: keep-alive 与 vue-router 组合使用</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -325,9 +297,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
